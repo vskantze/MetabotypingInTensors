@@ -29,12 +29,10 @@
 clear all
 clc
 %% Load data
-%load metabolomics_data.mat
-load real_data.mat
+load metabolomics_data.mat
 load metabolite_list.mat
 load variable_names.mat
-%load clinical_data.mat
-load clinical_data_real.mat
+load clinical_data.mat
 %% Subtracting baseline
 %data_subtracted = tensor_n - tensor_n(:,1,:,:);
 %% Removing first index
