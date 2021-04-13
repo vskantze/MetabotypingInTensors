@@ -180,8 +180,8 @@ for i_repeat = 1:nr_iterations                                             % Rep
             end
 
             %% Tensor decomposition
-            [Factors_tucker,~] = parafac(tensor_2_decomp,nr_components, Options,const); % Decomposing the tensor
-            individual_mode = Factors_tucker{2};                           % The individual mode for clustering
+            [model,~] = parafac(tensor_2_decomp,nr_components, Options,const); % Decomposing the tensor
+            individual_mode = model{2};                           % The individual mode for clustering
             %% Cluster to find the groups
             best_result = 0;
                 for i_comb = 1:length(list_combinations)

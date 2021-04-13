@@ -34,9 +34,9 @@ load metabolite_list.mat
 load variable_names.mat
 load clinical_data.mat
 %% Subtracting baseline
-%data_subtracted = tensor_n - tensor_n(:,1,:,:);
+data_subtracted = tensor_n - tensor_n(:,1,:,:);
 %% Removing first index
-%data_subtracted(:,1,:,:) = [];
+data_subtracted(:,1,:,:) = [];
 %% Outlier rejection of whole curve
 data_subtracted = OutlierRejectionCurve(data_subtracted);                  % Augmenting outliers that span the whole time series
 %% Outlier rejection spikes

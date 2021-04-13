@@ -61,7 +61,7 @@ components_for_decomposition = 2;
 table_preprocess = array2table(zeros(7,9),'VariableNames',var_names);      % clinical parameter names
 table_preprocess.Properties.RowNames = {'A','B','C','Da','Db','Ea','Eb'};  % pre-processing names
 %% Number of iterations
-var_num = 10;
+var_num = 100;
 %% Cut-off limit for signifigance - 95%
 cut_off_limit_p = 0.05;                                                    % Cut-off limit for the anova p-values for the clinical parameters
 silhouette_cut_off = 0.65;                                                 % Cut-off for sihlouette values of clusters

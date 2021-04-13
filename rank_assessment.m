@@ -28,9 +28,6 @@
 %------------- BEGIN CODE --------------
 clc
 clear all
-%% Removing internal standards
-table_info = readtable('Copy of List of metabolites and their likely origin.xlsx');
-internal_standard_indeces = find(contains(table_info.Origin,'Internal standard'));
 %% Loading metabolomics data
 load metabolomics_data.mat
 %% Subtracting baseline
