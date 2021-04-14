@@ -57,11 +57,22 @@ Options(6) = 1e6;
 Options(5) = NaN;
 const = [0 0 0 0];
 components_for_decomposition = 2;
+%% Combinations of components
+list_combinations = {};                                            % Preallocate
+iter = 0;
+for i = 1:components_for_decomposition                     % Making the list of all combinations from 1 to number_of_components_2_analyse
+    tmp = nchoosek(1:components_for_decomposition,i);
+    for ii = 1:size(tmp,1)
+        iter = iter+1;
+        list_combinations{iter} = tmp(ii,:);
+    end
+end
 %% Preallocation
 table_preprocess = array2table(zeros(7,9),'VariableNames',var_names);      % clinical parameter names
 table_preprocess.Properties.RowNames = {'A','B','C','Da','Db','Ea','Eb'};  % pre-processing names
 %% Number of iterations
 var_num = 100;
+variable_list = cell(var_num,1);                                           % Preallocate
 %% Cut-off limit for signifigance - 95%
 cut_off_limit_p = 0.05;                                                    % Cut-off limit for the anova p-values for the clinical parameters
 silhouette_cut_off = 0.65;                                                 % Cut-off for sihlouette values of clusters
@@ -71,7 +82,6 @@ for i_preprocess = 1:7
     %% Predefine
     res_anova = cell(var_num,2);                                           % Preallocate
     clusters_save = cell(var_num,2);                                       % Preallocate
-    variable_list = cell(var_num);                                       % Preallocate
     stack_all_near_solutions = {};
     data_near_stacked_names = {};    
     %% Main loop
@@ -84,7 +94,6 @@ for i_preprocess = 1:7
         %% Variable sampling
         variables = randperm(size(data_2B_processed,2));                   % random sampling of metabolites
         variables = variables(1:randi([10 size(data_2B_processed,2)],1));  % random number of samples between 10 and 79
-        variable_list{var} = variables;
         metabolite_list_sampled = metabolite_list(variables);              % new list of metabolites
         data_2B_processed = data_2B_processed(:,variables,:,:);            % bootstrapped data without repeats
         %% Normalizations
@@ -117,24 +126,17 @@ for i_preprocess = 1:7
         end
         %% Tensor decomposition
         [model,~,~,~] = parafac(data,components_for_decomposition, Options, const); % first model
-        for i_p = 1:5                                                        % repeating the decomposition for 5 different random initializations
-            [factor_matrices,~,error,corcondia,factor_degeneracy] = ParafacTwoFactorDegeneracy(data,components_for_decomposition, Options, const); % tensor decomp
-            corecondia_save(i_p, var) = corcondia;                         % saving core consistency
-            error_save(i_p,var) = error;                                   % saving error
-            [~,similarity_save(i_p,var), ~] = ModelSimilarity(model,factor_matrices); % saving similarity
-            factor_degen(i_p,var) = factor_degeneracy;                     % saving factor degenaracy
-        end
-        individual_component = factor_matrices{4};                         % The individual mode to be clustered
-        %% Combinations of components
-        list_combinations = {};                                            % Preallocate
-        iter = 0;
-        for i = 1:components_for_decomposition                     % Making the list of all combinations from 1 to number_of_components_2_analyse
-            tmp = nchoosek(1:components_for_decomposition,i);
-            for ii = 1:size(tmp,1)
-                iter = iter+1;
-                list_combinations{iter} = tmp(ii,:);
+        if i_preprocess == 2
+            variable_list{var,1} = variables;
+            for i_p = 1:5                                                        % repeating the decomposition for 5 different random initializations
+                [factor_matrices,~,error,corcondia,factor_degeneracy] = ParafacTwoFactorDegeneracy(data,components_for_decomposition, Options, const); % tensor decomp
+                corecondia_save(i_p, var) = corcondia;                         % saving core consistency
+                error_save(i_p,var) = error;                                   % saving error
+                [~,similarity_save(i_p,var), ~] = ModelSimilarity(model,factor_matrices); % saving similarity
+                factor_degen(i_p,var) = factor_degeneracy;                     % saving factor degenaracy
             end
         end
+        individual_component = model{4};                         % The individual mode to be clustered
         %% Cluster
         mean_silho = zeros(size(list_combinations,2), max_clust_nr-1);     % Preallocate
         index_clusters_cell = cell(size(list_combinations,2), max_clust_nr-1);% Preallocate

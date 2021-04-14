@@ -58,7 +58,7 @@ const = [0 0 0 0];
 compi = 2;                                                                 % Components
 reference_indexing = [1 2 1 2 1 1 1 2 1 1 1 1 1 2 2 1 2];                  % Given by kmeans on the CP components
 [model,~,err,corcondia] = parafac(data_subtracted_normalized,compi,Options,const); % Tensor decomp
-amino_acids = [11,12,13,16,17,20];                                         % Amino acid indeces that are predominant in the metabotype clusters
+amino_acids = [7,13,8,11,15,22];                                           % Amino acid indeces that are predominant in the metabotype clusters
 [~,indeces] = sort(model{3}(:,2),'descend');                               % Sort the metabolites according to loading
 ComponentPlotter(compi, model{1},reference_indexing, model{3}, classification_list, model{2}, model{4},indeces(amino_acids)) % plot components
 exp_var = ExplainedVariance(model,data_subtracted_normalized);             % Show the explained variance
@@ -115,4 +115,11 @@ ComponentPlotter(compi, SCORE,reference_indexing, COEFF, class_list_cat_time, []
 table_anova = AssociationByANOVA(clinical_data_n, var_names, reference_indexing, 0); % Print association with ANOVA to the clusters
 fprintf('ANOVA association to clinical data from clusters found in metabolomics data using CP \n')
 disp(table_anova)
+%% Plot two-factor degeneracy
+%This does not produce any degenaracy due to the way that the simulated
+%data was produced. Try with compi  = 10 to see the degenaracy between two
+%components
+compi = 3;                                                                 % Components
+[model,~,err,corcondia] = parafac(data_subtracted_normalized,compi,Options,const); % Tensor decomp
+ComponentPlotter(compi, model{1},[], model{3}, [], model{2}, model{4},[]) % plot components
 %------------- END CODE --------------

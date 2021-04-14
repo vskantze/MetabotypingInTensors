@@ -197,7 +197,7 @@ elseif (isempty(diet) && isempty(time))                                    % doi
         end
         if (c == components)
             xticks([1 round(size(metabolite,1)/2) size(metabolite,1)])
-            
+            xlabel(['\bf Individual index'],'interpreter','latex')
         else
             set(gca,'xtick',[])
         end
